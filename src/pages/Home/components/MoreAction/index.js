@@ -1,12 +1,8 @@
-import { useState } from 'react'
-import { Modal } from 'antd-mobile'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { setMoreAction } from '@/store/actions'
-
 import Icon from '@/components/Icon'
-// import { http } from '@/utils/http'
-
+import { setMoreAction } from '@/store/actions'
+import { Modal } from 'antd-mobile'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './index.module.scss'
 
 // feedbackType: normal / junk

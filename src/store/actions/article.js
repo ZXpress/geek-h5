@@ -31,7 +31,7 @@ const getArticleInfo = id => {
 
       const articleInfo = res.data.data
       dispatch(getSuccess(articleInfo))
-    } catch {}
+    } catch { }
   }
 }
 
@@ -54,7 +54,7 @@ const getCommentList = ({ type, source }) => {
       })
 
       dispatch(getComment(res.data.data))
-    } catch {}
+    } catch { }
   }
 }
 
@@ -78,7 +78,7 @@ const getMoreComment = ({ type, source, offset }) => {
       })
 
       dispatch(getCommentMore(res.data.data))
-    } catch {}
+    } catch { }
   }
 }
 
@@ -99,7 +99,7 @@ const deleteLiking = id => {
           like_count: article.info.like_count - 1
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 
@@ -123,7 +123,7 @@ const updateLiking = id => {
           like_count: article.info.like_count + 1
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 
@@ -142,7 +142,7 @@ const deleteCollection = id => {
           is_collected: false
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 
@@ -163,7 +163,7 @@ const updateCollection = id => {
           is_collected: true
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 
@@ -237,7 +237,7 @@ const deleteCommentLiking = id => {
           })
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 
@@ -268,7 +268,7 @@ const updateCommentLiking = id => {
           })
         })
       )
-    } catch {}
+    } catch { }
   }
 }
 

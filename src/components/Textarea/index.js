@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import classnames from 'classnames'
-
 import styles from './index.module.scss'
 
 const Textarea = ({
@@ -14,7 +13,6 @@ const Textarea = ({
 
   const onValueChange = e => {
     onChange(e)
-
     setCount(e.target.value.length)
   }
 

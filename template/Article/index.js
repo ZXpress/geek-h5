@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import NavBar from '@/components/NavBar'
 import noComment from '@/assets/none.png'
-import { http } from '@/utils/http'
+import { http } from '@/utils'
 
 import styles from './index.module.scss'
 

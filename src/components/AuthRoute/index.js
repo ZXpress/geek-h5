@@ -1,8 +1,9 @@
-import { Route, Redirect } from 'react-router-dom'
-import { isAuth } from '@/utils/token'
+import { isAuth } from '@/utils'
+import { Redirect, Route } from 'react-router-dom'
 
 // https://reactrouter.com/web/example/auth-workflow
 // https://stackoverflow.com/a/64307442/15443637
+
 const AuthRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
@@ -10,14 +11,14 @@ const AuthRoute = ({ component: Component, ...rest }) => {
       render={props => {
         if (!isAuth()) {
           return (
-            <Redirect
-              to={{
+            <Redirect to={
+              {
                 pathname: '/login',
                 state: {
                   from: props.location.pathname
                 }
-              }}
-            />
+              }
+            } />
           )
         }
         return <Component {...props} />

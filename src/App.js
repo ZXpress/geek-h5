@@ -1,21 +1,17 @@
-import { Router, Route, Switch, Redirect } from 'react-router-dom'
-
-import { history } from '@/utils/history'
-
-import Login from './pages/Login'
-import Layout from './pages/Layout'
-import Search from './pages/Search'
-import Article from './pages/Article'
-import SearchResult from './pages/Search/Result'
-import ProfileEdit from './pages/Profile/Edit'
-import ProfileFeedback from './pages/Profile/Feedback'
-import Chat from './pages/Profile/Chat'
-import NotFound from './pages/NotFound'
-
 import { AuthRoute } from '@/components/AuthRoute'
 import { KeepAlive } from '@/components/KeepAlive'
-
+import { history } from '@/utils'
+import { Redirect, Route, Router, Switch } from 'react-router-dom'
 import './App.css'
+import Article from './pages/Article'
+import Layout from './pages/Layout'
+import Login from './pages/Login'
+import NotFound from './pages/NotFound'
+import Chat from './pages/Profile/Chat'
+import ProfileEdit from './pages/Profile/Edit'
+import ProfileFeedback from './pages/Profile/Feedback'
+import Search from './pages/Search'
+import SearchResult from './pages/Search/Result'
 
 function App() {
   return (
