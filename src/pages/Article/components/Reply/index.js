@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Drawer } from 'antd-mobile'
-
 import NavBar from '@/components/NavBar'
-import CommentItem from '../CommentItem'
-import CommentFooter from '../CommentFooter'
-import CommentInput from '../CommentInput'
 import NoneComment from '@/components/NoneComment'
 import { http } from '@/utils'
-
+import { Drawer } from 'antd-mobile'
+import { useEffect, useState } from 'react'
+import CommentFooter from '../CommentFooter'
+import CommentInput from '../CommentInput'
+import CommentItem from '../CommentItem'
 import styles from './index.module.scss'
 
 const Reply = ({ data, art_id, onClose }) => {

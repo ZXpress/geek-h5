@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
-import classnames from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { getRecommendChannel, deleteChannel, addChannel } from '@/store/actions'
-
 import Icon from '@/components/Icon'
+import { addChannel, deleteChannel, getRecommendChannel } from '@/store/actions'
 import { isAuth } from '@/utils'
+import classnames from 'classnames'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './index.module.scss'
 
 const Channels = ({

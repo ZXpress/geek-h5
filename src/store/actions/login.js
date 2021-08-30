@@ -1,4 +1,4 @@
-import { http, setTokens, removeTokens } from '@/utils'
+import { http, removeTokens, setTokens } from '@/utils'
 
 const saveToken = tokens => ({ type: 'login/token', payload: tokens })
 
@@ -36,3 +36,4 @@ const logout = () => {
 
 export { saveToken }
 export { sendSms, login, logout }
+

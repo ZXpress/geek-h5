@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-
-import NavBar from '@/components/NavBar'
 import noComment from '@/assets/none.png'
+import NavBar from '@/components/NavBar'
 import { http } from '@/utils'
-
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const Article = () => {

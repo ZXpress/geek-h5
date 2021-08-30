@@ -1,9 +1,8 @@
-import NavBar from '@/components/NavBar'
 import Input from '@/components/Input'
+import NavBar from '@/components/NavBar'
 import Textarea from '@/components/Textarea'
-
-import styles from './index.module.scss'
 import { useState } from 'react'
+import styles from './index.module.scss'
 
 const EditInput = ({ config, onClose, onCommit }) => {
   const [value, setValue] = useState(config.value || '')

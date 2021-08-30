@@ -1,44 +1,29 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import Icon from '@/components/Icon'
+import NavBar from '@/components/NavBar'
+import NoneComment from '@/components/NoneComment'
+import Sticky from '@/components/Sticky'
+import {
+  deleteCollection, deleteCommentLiking, deleteFollow, deleteLiking, getArticleInfo, getCommentList,
+  getMoreComment,
+  setComment, setInfo, updateCollection, updateCommentLiking, updateFollow, updateLiking
+} from '@/store/actions'
 import { Drawer } from 'antd-mobile'
-import throttle from 'lodash/fp/throttle'
-
-import ContentLoader from 'react-content-loader'
+import classNames from 'classnames'
 import dayjs from 'dayjs'
 import DOMPurify from 'dompurify'
-import 'highlight.js/styles/vs2015.css'
 import hljs from 'highlight.js'
-
+import 'highlight.js/styles/vs2015.css'
+import throttle from 'lodash/fp/throttle'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import ContentLoader from 'react-content-loader'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getArticleInfo,
-  setInfo,
-  getCommentList,
-  getMoreComment,
-  setComment,
-  deleteLiking,
-  updateLiking,
-  deleteCollection,
-  updateCollection,
-  deleteFollow,
-  updateFollow,
-  deleteCommentLiking,
-  updateCommentLiking
-} from '@/store/actions'
-
-import NavBar from '@/components/NavBar'
-import Icon from '@/components/Icon'
-import Sticky from '@/components/Sticky'
-import NoneComment from '@/components/NoneComment'
-import CommentItem from './components/CommentItem'
-import CommentInput from './components/CommentInput'
+import { useHistory, useParams } from 'react-router-dom'
 import CommentFooter from './components/CommentFooter'
-
+import CommentInput from './components/CommentInput'
+import CommentItem from './components/CommentItem'
 import Reply from './components/Reply'
 import Share from './components/Share'
-
 import styles from './index.module.scss'
-import classNames from 'classnames'
 
 const useScroll = (
   handleScroll = () => {},

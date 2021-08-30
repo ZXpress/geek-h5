@@ -1,17 +1,13 @@
-import { useHistory } from 'react-router-dom'
-import classnames from 'classnames'
-import io from 'socket.io-client'
-import { useSelector } from 'react-redux'
-
-import NavBar from '@/components/NavBar'
-import Input from '@/components/Input'
 import Icon from '@/components/Icon'
-
-import styles from './index.module.scss'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { useRef } from 'react'
+import Input from '@/components/Input'
+import NavBar from '@/components/NavBar'
 import { getTokens } from '@/utils'
+import classnames from 'classnames'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import io from 'socket.io-client'
+import styles from './index.module.scss'
 
 const Chat = () => {
   const history = useHistory()

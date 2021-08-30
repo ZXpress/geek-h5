@@ -1,13 +1,12 @@
-import { Route, useHistory, useLocation } from 'react-router-dom'
-import classnames from 'classnames'
-
 import { AuthRoute } from '@/components/AuthRoute'
-import { KeepAlive } from '@/components/KeepAlive'
 import Icon from '@/components/Icon'
+import { KeepAlive } from '@/components/KeepAlive'
+import classnames from 'classnames'
+import { Route, useHistory, useLocation } from 'react-router-dom'
 import Home from '../Home'
+import Profile from '../Profile'
 import Question from '../Question'
 import Video from '../Video'
-import Profile from '../Profile'
 import styles from './index.module.scss'
 
 const menus = [

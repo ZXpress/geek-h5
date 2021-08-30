@@ -4,7 +4,6 @@ const {
   addWebpackAlias,
   addBabelPlugins
 } = require('customize-cra')
-
 const pxToViewport = require('postcss-px-to-viewport')
 const path = require('path')
 

@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { getProfile } from '@/store/actions'
 import Icon from '@/components/Icon'
+import { getProfile } from '@/store/actions'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useHistory } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const Profile = () => {

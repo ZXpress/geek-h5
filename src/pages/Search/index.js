@@ -1,11 +1,10 @@
-import { useState, useMemo } from 'react'
+import Icon from '@/components/Icon'
+import NavBar from '@/components/NavBar'
+import { clearSuggestion, getSuggestion } from '@/store/actions'
 import classnames from 'classnames'
 import debounce from 'lodash/debounce'
+import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { getSuggestion, clearSuggestion } from '@/store/actions'
-import NavBar from '@/components/NavBar'
-import Icon from '@/components/Icon'
 import styles from './index.module.scss'
 
 const Search = ({ history }) => {

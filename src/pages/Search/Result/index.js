@@ -1,11 +1,9 @@
-import { useEffect } from 'react'
-import { useLocation, useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { getSearchList } from '@/store/actions'
-import NavBar from '@/components/NavBar'
 import ArticleItem from '@/components/ArticleItem'
-
+import NavBar from '@/components/NavBar'
+import { getSearchList } from '@/store/actions'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const Result = () => {

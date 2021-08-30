@@ -1,5 +1,5 @@
-import differenceBy from 'lodash/differenceBy'
 import { http } from '@/utils'
+import differenceBy from 'lodash/differenceBy'
 
 const getUser = channels => ({ type: 'home/channel', payload: channels })
 const getRecommend = channels => ({ type: 'home/recommend', payload: channels })

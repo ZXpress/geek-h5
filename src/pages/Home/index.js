@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
-import { Drawer } from 'antd-mobile'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { getUserChannel, getUser } from '@/store/actions'
-import MoreAction from './components/MoreAction'
-import Tabs from '@/components/Tabs'
 import Icon from '@/components/Icon'
+import Tabs from '@/components/Tabs'
+import { getUser, getUserChannel } from '@/store/actions'
+import { isAuth } from '@/utils'
+import { Drawer } from 'antd-mobile'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import ArticleList from './components/ArticleList'
 import Channels from './components/Channels'
-
-import { isAuth } from '@/utils'
+import MoreAction from './components/MoreAction'
 import styles from './index.module.scss'
 
 const CHANNEL_KEY = 'itcast_channel_k'

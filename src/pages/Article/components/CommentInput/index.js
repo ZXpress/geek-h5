@@ -1,9 +1,7 @@
-import { useState, useRef, useEffect } from 'react'
-
 import NavBar from '@/components/NavBar'
-
-import styles from './index.module.scss'
 import { http } from '@/utils'
+import { useEffect, useRef, useState } from 'react'
+import styles from './index.module.scss'
 
 const CommentInput = ({ id, name, onClose, onComment, art_id }) => {
   const [value, setValue] = useState('')

@@ -1,13 +1,11 @@
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import classnames from 'classnames'
-import { useHistory, useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { login, sendSms } from '@/store/actions'
-
 import Input from '@/components/Input'
 import NavBar from '@/components/NavBar'
-
+import { login, sendSms } from '@/store/actions'
+import classnames from 'classnames'
+import { useFormik } from 'formik'
+import { useDispatch } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
+import * as Yup from 'yup'
 import styles from './index.module.scss'
 
 const Login = () => {

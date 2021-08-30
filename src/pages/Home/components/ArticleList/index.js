@@ -1,20 +1,14 @@
-import { memo, useEffect, useState, useRef } from 'react'
+import ArticleItem from '@/components/ArticleItem'
+import { setMoreAction } from '@/store/actions'
+import { http, isAuth } from '@/utils'
 import { PullToRefresh } from 'antd-mobile'
-
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import ContentLoader from 'react-content-loader'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { areEqual, VariableSizeList as List } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-
-import ContentLoader from 'react-content-loader'
-import { useHistory } from 'react-router-dom'
-
-import { useDispatch } from 'react-redux'
-import { setMoreAction } from '@/store/actions'
-
-import ArticleItem from '@/components/ArticleItem'
-import { http, isAuth } from '@/utils'
-
 import styles from './index.module.scss'
-import { useCallback } from 'react'
 
 const Row = memo(({ index, style, data, setSize }) => {
   const dispatch = useDispatch()
@@ -22,6 +16,7 @@ const Row = memo(({ index, style, data, setSize }) => {
   const rowRef = useRef()
   const history = useHistory()
   const item = data.list[index]
+
   // console.log(data, item)
   // https://tiagohorta1995.medium.com/dynamic-list-virtualization-using-react-window-ab6fbf10bfb2
   useEffect(() => {
@@ -30,7 +25,7 @@ const Row = memo(({ index, style, data, setSize }) => {
     }
   }, [rowRef, index, setSize])
 
-  if (!item)
+  if (!item) {
     return (
       <ContentLoader
         speed={2}
@@ -47,19 +42,19 @@ const Row = memo(({ index, style, data, setSize }) => {
         <rect x="136" y="105" rx="0" ry="0" width="50" height="22" />
       </ContentLoader>
     )
+  }
 
   const { art_id } = item
+
   const onToAritcleDetail = () => {
     history.push(`/article/${art_id}`)
   }
 
   const onFeedback = art_id => {
-    dispatch(
-      setMoreAction({
-        id: art_id,
-        visible: true
-      })
-    )
+    dispatch(setMoreAction({
+      id: art_id,
+      visible: true
+    }))
   }
 
   const {
@@ -89,6 +84,7 @@ const Row = memo(({ index, style, data, setSize }) => {
       onClick={onToAritcleDetail}
     >
       <ArticleItem {...articleItemProps} onFeedback={onFeedback} />
+
       {!data.hasMore && index === data.list.length - 1 && (
         <div className="list-no-more">没有更多文章了</div>
       )}
@@ -99,21 +95,25 @@ const Row = memo(({ index, style, data, setSize }) => {
 const ArticleList = ({ channelId, activeId }) => {
   const listRef = useRef()
   const sizeMap = useRef({})
+
   const setSize = useCallback((index, size) => {
     if (sizeMap.current[index]) return
     sizeMap.current = { ...sizeMap.current, [index]: size }
     // https://github.com/bvaughn/react-window/issues/6#issuecomment-548897123
     listRef.current.resetAfterIndex(index)
   }, [])
+
   const getSize = useCallback(index => {
     return sizeMap.current[index] || 70
   }, [])
+
   const [refreshing, setRefreshing] = useState(false)
 
   const [articles, setArticles] = useState({
     list: [],
     preTimestamp: +new Date()
   })
+
   const [hasMore, setHasMore] = useState(true)
 
   useEffect(() => {
@@ -126,6 +126,7 @@ const ArticleList = ({ channelId, activeId }) => {
       })
 
       const { results, pre_timestamp } = res.data.data
+
       setArticles({
         list: results,
         preTimestamp: pre_timestamp
@@ -143,7 +144,6 @@ const ArticleList = ({ channelId, activeId }) => {
     // 列表数据为空时，说明当前 tab 还没有被激活，此时，不需要加载数据
     if (articles.list.length === 0) return Promise.resolve()
 
-    // console.log('loadMoreItems')
     return new Promise(async resolve => {
       const res = await http.get('/articles', {
         params: {
@@ -155,6 +155,7 @@ const ArticleList = ({ channelId, activeId }) => {
       resolve()
 
       const { results, pre_timestamp } = res.data.data
+
       if (!pre_timestamp) {
         setHasMore(false)
       } else {

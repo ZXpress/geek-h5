@@ -1,16 +1,13 @@
-import { useState, useRef, useEffect } from 'react'
-import { List, DatePicker, Drawer, Modal } from 'antd-mobile'
-import { useHistory } from 'react-router-dom'
-import classnames from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import NavBar from '@/components/NavBar'
 import {
   getUserProfile,
-  logout,
-  updateProfile,
-  updateAvatar
+  logout, updateAvatar, updateProfile
 } from '@/store/actions'
-
-import NavBar from '@/components/NavBar'
+import { DatePicker, Drawer, List, Modal } from 'antd-mobile'
+import classnames from 'classnames'
+import { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import EditInput from './components/EditInput'
 import EditList from './components/EditList'
 import styles from './index.module.scss'

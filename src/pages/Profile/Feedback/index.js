@@ -1,7 +1,6 @@
-import { useHistory } from 'react-router-dom'
-import { ImagePicker, InputItem } from 'antd-mobile'
 import NavBar from '@/components/NavBar'
-
+import { ImagePicker, InputItem } from 'antd-mobile'
+import { useHistory } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const FeedBack = () => {

@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { useRef } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
 const NotFound = () => {
