@@ -20,7 +20,7 @@ function App() {
 
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/home/index" />} />
-        <Route exact path="/home" render={() => <Redirect to="/home/index" />} ƒ />
+        <Route exact path="/home" render={() => <Redirect to="/home/index" />} />
 
         <Route path="/login" component={Login} />
         <Route path="/search" component={Search} />
