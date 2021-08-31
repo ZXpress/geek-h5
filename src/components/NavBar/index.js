@@ -1,5 +1,4 @@
 import classnames from 'classnames'
-
 import styles from './index.module.scss'
 
 const NavBar = ({ children, className, rightContent, onLeftClick }) => {
