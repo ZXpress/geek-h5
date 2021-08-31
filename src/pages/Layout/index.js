@@ -22,12 +22,7 @@ const Layout = () => {
 
   return (
     <div className={styles.root}>
-      <KeepAlive
-        alivePath="/home/index"
-        exact
-        path="/home/index"
-        component={Home}
-      />
+      <KeepAlive alivePath="/home/index" exact path="/home/index" component={Home} />
       <Route path="/home/question" component={Question} />
       <Route path="/home/video" component={Video} />
       <AuthRoute path="/home/profile" component={Profile} />
