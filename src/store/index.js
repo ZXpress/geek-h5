@@ -1,24 +1,19 @@
-import { getTokens } from '@/utils'
-import { applyMiddleware, createStore } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import rootReducer from './reducers'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import reducer from './reducers'
+import { getTokenInfo } from '@/utils/storage'
 
-let middlewares = applyMiddleware(thunk)
-
-// 需要传入 {}
-const composeEnhancers = composeWithDevTools({})
-middlewares = composeEnhancers(middlewares)
-
-// 刷新页面时，读取本地缓存中的 tokens
-const preloadedState = getTokens()
-
+// 参数一：reducer
+// 参数二：指定store的初始值
+// 参数三：指定中间件
 const store = createStore(
-  rootReducer,
+  reducer,
   {
-    login: preloadedState || {}
+    // 要给哪个模块初始值
+    login: getTokenInfo(),
   },
-  middlewares
+  composeWithDevTools(applyMiddleware(thunk))
 )
 
 export default store

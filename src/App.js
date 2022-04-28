@@ -1,47 +1,54 @@
-import { AuthRoute } from '@/components/AuthRoute'
-import { KeepAlive } from '@/components/KeepAlive'
-import { history } from '@/utils'
-import { Redirect, Route, Router, Switch } from 'react-router-dom'
-import Article from './pages/Article'
-import Layout from './pages/Layout'
-import Login from './pages/Login'
-import NotFound from './pages/NotFound'
-import Chat from './pages/Profile/Chat'
-import ProfileEdit from './pages/Profile/Edit'
-import ProfileFeedback from './pages/Profile/Feedback'
-import Search from './pages/Search'
-import SearchResult from './pages/Search/Result'
+import React, { Suspense } from 'react'
+import AuthRoute from './components/AuthRoute'
+import {
+  // BrowserRouter as Router,
+  Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom'
+import history from './utils/history'
 
-function App() {
+// 按需导入
+const Login = React.lazy(() => import('@/pages/Login'))
+const Home = React.lazy(() => import('@/pages/Layout'))
+const ProfileEdit = React.lazy(() => import('@/pages/Profile/Edit'))
+const ProfileChat = React.lazy(() => import('@/pages/Profile/Chat'))
+const NotFound = React.lazy(() => import('@/pages/NotFound'))
+const FeedBack = React.lazy(() => import('@/pages/Profile/Feedback'))
+
+export default function App() {
   return (
-    <Router history={history}>
-      {/* 注意：与 Switch 不兼容 */}
-      <KeepAlive alivePath="/home" path="/home" exact component={Layout} />
+    <div>
+      {/* BrowserRouter等价于Router + history={history} */}
+      <Router history={history}>
+        <div className="app">
+          <Suspense fallback={<div>loading...</div>}>
+            <Switch>
+              <Redirect exact from="/" to="/home"></Redirect>
+              <Route path="/login" component={Login}></Route>
+              <Route path="/home" component={Home}></Route>
 
-      <Switch>
-        <Route exact path="/" render={() => <Redirect to="/home/index" />} />
-        <Route exact path="/home" render={() => <Redirect to="/home/index" />} />
+              {/* 需要登录才能访问 */}
+              <AuthRoute
+                path="/profile/edit"
+                component={ProfileEdit}
+              ></AuthRoute>
+              <AuthRoute
+                path="/profile/chat"
+                component={ProfileChat}
+              ></AuthRoute>
+              <AuthRoute
+                path="/profile/feedback"
+                component={FeedBack}
+              ></AuthRoute>
 
-        <Route path="/login" component={Login} />
-        <Route path="/search" component={Search} />
-        <Route path="/article/:id" component={Article} />
-        <Route path="/search/result" component={SearchResult} />
-
-        <AuthRoute path="/profile/edit" component={ProfileEdit} />
-        <AuthRoute path="/profile/feedback" component={ProfileFeedback} />
-        <AuthRoute path="/profile/chat" component={Chat} />
-
-        {/* <Route path="*" component={NotFound} /> */}
-        {/* 注意：因为 /home 不在 Switch 内部，所以，需要手动处理 /home 开头的路由，否则，会被当做 404 处理 */}
-        <Route path="*" render={props => {
-          if (props.location.pathname.startsWith('/home')) {
-            return null
-          }
-          return <NotFound {...props} />
-        }} />
-      </Switch>
-    </Router>
+              {/* 404 */}
+              <Route component={NotFound}></Route>
+            </Switch>
+          </Suspense>
+        </div>
+      </Router>
+    </div>
   )
 }
-
-export default App

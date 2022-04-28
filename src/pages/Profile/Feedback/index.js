@@ -3,7 +3,7 @@ import { ImagePicker, InputItem } from 'antd-mobile'
 import { useHistory } from 'react-router-dom'
 import styles from './index.module.scss'
 
-const FeedBack = () => {
+const ProfileFeedback = () => {
   const history = useHistory()
 
   return (
@@ -34,4 +34,4 @@ const FeedBack = () => {
   )
 }
 
-export default FeedBack
+export default ProfileFeedback

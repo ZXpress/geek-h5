@@ -1,5 +1,5 @@
+// 导入scss文件
 @import '@scss/hairline.scss';
-
 .root {
   position: relative;
   display: flex;
@@ -8,7 +8,8 @@
   width: 100%;
   // padding: 0 42px;
   background-color: #fff;
-  @include hairline(bottom, #f0f0f0);
+  // border-bottom: 1px solid #ccc;
+  @include hairline('bottom', #ccc);
 
   :global {
     .left {
@@ -30,6 +31,7 @@
 
     .right {
       padding-right: 16px;
+      width: 48px;
       // position: absolute;
       // right: 16px;
     }

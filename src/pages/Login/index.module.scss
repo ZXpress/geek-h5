@@ -1,3 +1,4 @@
+@import '@scss/hairline.scss';
 .root {
   :global {
     .iconfanhui {
@@ -18,6 +19,27 @@
         &:first-child {
           margin-bottom: 17px;
         }
+        .input-box {
+          position: relative;
+          @include hairline(bottom, #ccc);
+          .input {
+            width: 100%;
+            height: 58px;
+            padding: 0;
+            font-size: 16px;
+
+            &::placeholder {
+              color: #a5a6ab;
+            }
+          }
+          .extra {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            margin-top: -8px;
+            color: #999;
+          }
+        }
       }
 
       .validate {
@@ -28,6 +50,7 @@
       }
 
       .login-btn {
+        font-size: 16px;
         width: 100%;
         height: 50px;
         margin-top: 38px;

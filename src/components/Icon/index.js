@@ -1,20 +1,18 @@
-import classnames from 'classnames'
+// 封装icon组件
+import React from 'react'
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
-const Icon = ({ type, className, onClick }) => {
+function Icon({ type, className, ...rest }) {
   return (
-    <svg
-      className={classnames('icon', className)}
-      onClick={onClick}
-      aria-hidden="true"
-    >
+    <svg {...rest} className={classNames('icon', className)} aria-hidden="true">
       <use xlinkHref={`#${type}`}></use>
     </svg>
   )
 }
 
 Icon.propTypes = {
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
 }
 
 export default Icon

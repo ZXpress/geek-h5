@@ -1,105 +1,155 @@
-import { http } from '@/utils'
-import differenceBy from 'lodash/differenceBy'
+import request from '@/utils/request'
+import { getLocalChannels, hasToken, setLocalChannels } from '@/utils/storage'
+import {
+  SAVE_ALL_CHANNELS,
+  SAVE_ARTICLE_LIST,
+  SAVE_CHANNELS,
+} from '../action_types/home'
 
-const getUser = channels => ({ type: 'home/channel', payload: channels })
-const getRecommend = channels => ({ type: 'home/recommend', payload: channels })
-
-/**
- * 获取频道
- * @returns thunk
- */
-const getUserChannel = () => {
-  return async dispatch => {
-    try {
-      const res = await http.get('/user/channels')
-      const { channels } = res.data.data
-      const newChannels = channels.map(item => ({
-        id: item.id,
-        title: item.name
-      }))
-      dispatch(getUser(newChannels))
-    } catch {}
-  }
-}
-
-/**
- * 获取所有频道中排除用户自己的频道数据
- * @param {Array} userChannles 用户自己的频道数组
- * @returns thunk
- */
-const getRecommendChannel = userChannles => {
-  return async dispatch => {
-    try {
-      const res = await http.get('/channels')
-      let { channels } = res.data.data
-
-      channels = channels.map(item => ({ id: item.id, title: item.name }))
-
-      // 去掉 我的频道 中已有项
-      const newChannels = differenceBy(channels, userChannles, 'id')
-      dispatch(getRecommend(newChannels))
-    } catch {}
-  }
-}
-
-/**
- * 删除频道
- * @param {Object} deleteChannel 要删除的频道数据
- * @param {boolean} isLogin 是否登录
- * @returns thunk
- */
-const deleteChannel = (deleteChannel, isLogin) => {
-  return async (dispatch, getState) => {
-    if (isLogin) {
-      try {
-        await http.delete(`/user/channels/${deleteChannel.id}`)
-      } catch {}
+// 获取用户频道
+export const getUserChannels = () => {
+  return async (dispatch) => {
+    // 判断用户是否登录
+    if (hasToken()) {
+      // 请求数据
+      const res = await request.get('/user/channels')
+      // 将频道数据保存到 Redux
+      dispatch(saveUserChannels(res.data.channels))
+    } else {
+      // 没有登录本地获取频道数据
+      const channels = getLocalChannels()
+      if (channels) {
+        // 有数据
+        dispatch(saveUserChannels(channels))
+      } else {
+        // 没有数据
+        // 请求数据
+        const res = await request.get('/user/channels')
+        // 将频道数据保存到 Redux
+        dispatch(saveUserChannels(res.data.channels))
+        // 保存到本地
+        setLocalChannels(res.data.channels)
+      }
     }
+  }
+}
 
-    const { home } = getState()
-    const channelsList = home.recommendChannel
+// 保存用户频道
+export const saveUserChannels = (payload) => {
+  return {
+    type: SAVE_CHANNELS,
+    payload,
+  }
+}
 
-    const newChannels = [...channelsList, deleteChannel].sort((a, b) => {
-      return a.id - b.id
+// 获取所有频道
+export const getAllChannels = () => {
+  return async (dispatch) => {
+    // 请求数据
+    const res = await request.get('/channels')
+    dispatch(saveAllChannels(res.data.channels))
+  }
+}
+
+// 保存所有频道
+export const saveAllChannels = (payload) => {
+  return {
+    type: SAVE_ALL_CHANNELS,
+    payload,
+  }
+}
+
+// 删除频道
+export const delChannel = (channel) => {
+  // 如果用户登录，发请求删除
+  // 没有登录，删除本地频道
+  // 最终修改redux中频道
+  return async (dispatch, getState) => {
+    // getState获取redux数据
+    const userChannels = getState().home.userChannels
+    if (hasToken()) {
+      await request({
+        method: 'delete',
+        url: `/user/channels/${channel.id}`,
+      })
+      // 保存频道数据到redux
+      dispatch(
+        saveUserChannels(userChannels.filter((item) => item.id !== channel.id))
+      )
+    } else {
+      // 没有登录
+      // 修改本地和redux
+      const result = userChannels.filter((item) => item.id !== channel.id)
+      dispatch(saveUserChannels(result))
+      setLocalChannels(result)
+    }
+  }
+}
+
+// 添加频道
+export const addChannel = (channel) => {
+  return async (dispatch, getState) => {
+    const channels = [...getState().home.userChannels, channel]
+    if (hasToken()) {
+      await request({
+        method: 'patch',
+        url: '/user/channels',
+        data: {
+          channels: [channel],
+        },
+      })
+      dispatch(saveUserChannels(channels))
+    } else {
+      dispatch(saveUserChannels(channels))
+      setLocalChannels(channels)
+    }
+  }
+}
+
+// 获取文章列表数据
+export const getArticleList = (channelId, timestamp, loadMore = false) => {
+  return async (dispatch) => {
+    const res = await request({
+      method: 'get',
+      url: '/articles',
+      params: {
+        channel_id: channelId,
+        timestamp: timestamp,
+      },
     })
-    dispatch(getRecommend(newChannels))
+    dispatch(
+      setArticleList({
+        channelId,
+        timestamp: res.data.pre_timestamp,
+        list: res.data.results,
+        loadMore,
+      })
+    )
   }
 }
 
-/**
- * 添加频道
- * @param {Object} addChannel 要添加的频道数据
- * @param {boolean} isLogin 是否登录
- * @returns thunk
- */
-const addChannel = (addChannel, isLogin) => {
+export const setArticleList = (payload) => {
+  return {
+    type: SAVE_ARTICLE_LIST,
+    payload,
+  }
+}
+
+export const setMoreAction = (payload) => {
+  return {
+    type: 'home/setMoreAction',
+    payload,
+  }
+}
+
+export const unLikeArticle = (articleId) => {
   return async (dispatch, getState) => {
-    if (isLogin) {
-      try {
-        await http.patch('/user/channels', {
-          channels: addChannel
-        })
-      } catch {}
-    }
-
-    const { home } = getState()
-    const channelsList = home.recommendChannel
-
-    const newChannels = channelsList.filter(item => item.id !== addChannel.id)
-    dispatch(getRecommend(newChannels))
+    await request({
+      method: 'post',
+      url: '/article/dislikes',
+      data: {
+        target: articleId,
+      },
+    })
   }
-}
-
-const setMoreAction = ({ id, visible }) => ({
-  type: 'home/more_action',
-  payload: { id, visible }
-})
-
-export {
-  getUserChannel,
-  getUser,
-  getRecommendChannel,
-  deleteChannel,
-  addChannel,
-  setMoreAction
 }

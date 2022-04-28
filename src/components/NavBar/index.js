@@ -1,18 +1,38 @@
-import classnames from 'classnames'
 import styles from './index.module.scss'
+import Icon from '@/components/icon'
+import { withRouter, useHistory } from 'react-router-dom'
+import classNames from 'classnames'
 
-const NavBar = ({ children, className, rightContent, onLeftClick }) => {
+// 通过路由配置的路由组件才有history、location、match
+// 解决：
+//   1.通过withRouter高阶组件增强后导出
+//   2.使用路由相关的hook  useHistory useLocation useParams
+function NavBar({ children, extra, onLeftClick, className }) {
+  const history = useHistory()
+  const back = () => {
+    // 回到上一页
+    if (onLeftClick) {
+      onLeftClick()
+    } else {
+      history.goBack()
+    }
+  }
   return (
-    <div className={classnames(styles.root, className)}>
-      <div className="left" onClick={onLeftClick}>
-        <svg className="icon" aria-hidden="true">
-          <use xlinkHref="#iconfanhui"></use>
-        </svg>
+    <div>
+      {/* 顶部工具栏 */}
+      <div className={classNames(styles.root, className)}>
+        {/* 后退按钮 */}
+        <div className="left">
+          <Icon type="iconfanhui" onClick={back} />
+        </div>
+        {/* 居中标题 */}
+        <div className="title">{children}</div>
+
+        {/* 右侧内容 */}
+        <div className="right">{extra}</div>
       </div>
-      <div className="title">{children}</div>
-      <div className="right">{rightContent}</div>
     </div>
   )
 }
 
-export default NavBar
+export default withRouter(NavBar)

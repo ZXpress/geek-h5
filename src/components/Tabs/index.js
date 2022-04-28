@@ -11,9 +11,9 @@ const Tabs = ({ index = 0, tabs = [], children, onChange }) => {
 
   const [activeIndex, setActiveIndex] = useState(index)
 
-  const changeTab = index => {
+  const changeTab = (index) => {
     setActiveIndex(index)
-    onChange(index)
+    onChange && onChange(index)
   }
 
   // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
@@ -22,6 +22,7 @@ const Tabs = ({ index = 0, tabs = [], children, onChange }) => {
     setActiveIndex(index)
   }, [index])
 
+  // activeIndex变化，修改线的位置和tabBar中心的位置
   useEffect(() => {
     // TODO: 清理上一次的 animate
 
@@ -70,7 +71,7 @@ const Tabs = ({ index = 0, tabs = [], children, onChange }) => {
                 key={i}
                 onClick={() => changeTab(i)}
               >
-                <span>{item.title}</span>
+                <span>{item.name}</span>
               </div>
             ))}
             <div className="tab-line" ref={lineRef}></div>
@@ -78,10 +79,17 @@ const Tabs = ({ index = 0, tabs = [], children, onChange }) => {
         </div>
 
         <div className="tabs-content">
-          {React.Children.map(children, child => {
-            return React.cloneElement(child, {
-              activeId: tabs[activeIndex]?.id || 0
-            })
+          {React.Children.map(children, (child, index) => {
+            return (
+              <div
+                className="tab-content-wrap"
+                style={{ display: index === activeIndex ? 'block' : 'none' }}
+              >
+                {React.cloneElement(child, {
+                  aid: tabs[activeIndex]?.id || 0,
+                })}
+              </div>
+            )
           })}
         </div>
       </div>
@@ -91,7 +99,6 @@ const Tabs = ({ index = 0, tabs = [], children, onChange }) => {
 
 Tabs.propTypes = {
   tabs: PropTypes.array.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element)
 }
 
 export default Tabs

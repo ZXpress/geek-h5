@@ -1,39 +1,52 @@
-import { http, removeTokens, setTokens } from '@/utils'
-
-const saveToken = tokens => ({ type: 'login/token', payload: tokens })
+import request from '@/utils/request'
+import { removeTokenInfo, setTokenInfo } from '@/utils/storage'
+import { LOGOUT } from '../action_types/profile'
 
 /**
- * 发送验证码
+ * 发送短信验证码
  * @param {string} mobile 手机号码
  * @returns thunk
  */
-const sendSms = mobile => {
-  return () => {
-    http.get(`/sms/codes/${mobile}`)
+export const sendCode = (mobile) => {
+  return async () => {
+    await request.get(`/sms/codes/${mobile}`)
+  }
+}
+
+export const saveToken = (payload) => {
+  return {
+    type: 'login/token',
+    payload,
   }
 }
 
 /**
  * 登录
- * @param {{ mobile, code }} values 登录信息
- * @returns thunk
+ * @param {*} data
+ * @returns
  */
-const login = values => {
-  return async dispatch => {
-    const res = await http.post('/authorizations', values)
-    // 保存到 redux 中
-    dispatch(saveToken(res.data.data))
-    // 保存到本地缓存中
-    setTokens(res.data.data)
+export const login = (data) => {
+  return async (dispatch) => {
+    const res = await request({
+      url: '/authorizations',
+      method: 'post',
+      data,
+    })
+    // 保存token
+    dispatch(saveToken(res.data))
+    // 同时保存到本地
+    setTokenInfo(res.data)
   }
 }
 
-const logout = () => {
-  return () => {
-    removeTokens()
+// logout
+export const logout = () => {
+  return (dispatch) => {
+    // 移除本地的token
+    removeTokenInfo()
+    // 移除redux中的token
+    dispatch({
+      type: LOGOUT,
+    })
   }
 }
-
-export { saveToken }
-export { sendSms, login, logout }
-

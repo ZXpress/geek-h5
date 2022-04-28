@@ -1,203 +1,170 @@
 import NavBar from '@/components/NavBar'
-import {
-  getUserProfile,
-  logout, updateAvatar, updateProfile
-} from '@/store/actions'
-import { DatePicker, Drawer, List, Modal } from 'antd-mobile'
-import classnames from 'classnames'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import styles from './index.module.scss'
+import { List, DatePicker, Drawer, Toast, Modal } from 'antd-mobile'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { getProfile, updatePhoto, updateProfile } from '@/store/actions/profile'
+import classnames from 'classnames'
 import EditInput from './components/EditInput'
 import EditList from './components/EditList'
-import styles from './index.module.scss'
-
+import dayjs from 'dayjs'
+import { logout } from '@/store/actions/login'
+import { useHistory } from 'react-router-dom'
 const Item = List.Item
-const alert = Modal.alert
 
-const ProfileEdit = () => {
-  const dispatch = useDispatch()
-  const userInfo = useSelector(state => state.profile.userProfile)
-
+export default function ProfileEdit() {
   const history = useHistory()
-  const fileRef = useRef()
-
-  const [openInput, setOpenInput] = useState({
+  const fileRef = useRef(null)
+  const dispatch = useDispatch()
+  const [open, setOpen] = useState({
     visible: false,
-    type: 'input'
-  })
-  const [openList, setOpenList] = useState({
-    visible: false,
-    type: 'gender'
+    type: '',
   })
 
-  useEffect(() => {
-    dispatch(getUserProfile())
-  }, [dispatch])
+  // 控制列表抽屉
+  const [listOpen, setListOpen] = useState({
+    visible: false,
+    // photo gender
+    type: '',
+  })
 
-  const onCloseOpenInput = () => {
-    setOpenInput({
-      visible: false,
-      type: ''
-    })
-  }
-
-  const onCloseOpenList = () => {
-    setOpenList({
-      visible: false,
-      type: ''
-    })
-  }
-
-  // 头像、性别配置
-  const openListConfig =
-    openList.type === 'avatar'
-      ? [
-          {
-            title: '拍照',
-            onClick: () => {
-              fileRef.current.click()
-            }
-          },
-          {
-            title: '本地选择',
-            onClick: () => {
-              fileRef.current.click()
-            }
-          }
-        ]
-      : [
-          {
-            title: '男',
-            onClick: () => {
-              dispatch(updateProfile('gender', 0))
-
-              setOpenList({
-                visible: false,
-                type: ''
-              })
-            }
-          },
-          {
-            title: '女',
-            onClick: async () => {
-              dispatch(updateProfile('gender', 1))
-              setOpenList({
-                visible: false,
-                type: ''
-              })
-            }
-          }
-        ]
-
-  // 昵称、简介配置
-  const openInputConfig =
-    openInput.type === 'name'
-      ? { title: '昵称', type: 'name', value: userInfo.name }
-      : { title: '简介', type: 'intro', value: userInfo.intro }
-
-  // 更新头像
-  const onUpdateAvatar = e => {
-    const avatar = e.target.files[0]
-    const formData = new FormData()
-    formData.append('photo', avatar)
-
-    dispatch(updateAvatar(formData))
-
-    setOpenList({
-      visible: false,
-      type: ''
-    })
-  }
-
-  // 修改生日
-  const onBirthdayChange = value => {
-    const date = `${value.getFullYear()}-${
-      value.getMonth() + 1
-    }-${value.getDate()}`
-
-    dispatch(updateProfile('birthday', date))
-  }
-
-  // 修改昵称或简介
-  const onCommit = (name, value) => {
-    dispatch(updateProfile(name, value))
-
-    setOpenInput({
-      visible: false,
-      type: ''
-    })
-  }
-
-  // 退出
-  const onLogout = () => {
-    alert('温馨提示', '你确定退出吗？', [
+  const config = {
+    photo: [
       {
-        text: '取消'
+        title: '拍照',
+        onClick: () => {
+          console.log('拍照')
+        },
       },
       {
+        title: '本地选择',
+        onClick: () => {
+          fileRef.current.click()
+        },
+      },
+    ],
+    gender: [
+      {
+        title: '男',
+        onClick: () => {
+          onCommit('gender', 0)
+        },
+      },
+      {
+        title: '女',
+        onClick: () => {
+          onCommit('gender', 1)
+        },
+      },
+    ],
+  }
+
+  const onClose = () => {
+    setOpen({
+      visible: false,
+      type: '',
+    })
+    setListOpen({
+      visible: false,
+      type: '',
+    })
+  }
+  useEffect(() => {
+    dispatch(getProfile())
+  }, [dispatch])
+
+  const onCommit = async (type, value) => {
+    await dispatch(updateProfile({ [type]: value }))
+    Toast.success('修改成功', 1)
+    onClose()
+  }
+
+  const onFileChange = async (e) => {
+    const file = e.target.files[0]
+    // 上传文件  使用formData
+    const formData = new FormData()
+    formData.append('photo', file)
+    await dispatch(updatePhoto(formData))
+    Toast.success('修改成功')
+    onClose()
+  }
+
+  const onBirthChange = (e) => {
+    onCommit('birthday', dayjs(e).format('YYYY-MM-DD'))
+  }
+
+  const logOut = () => {
+    // 显示弹框
+    Modal.alert('温馨提示', '确定要退出吗', [
+      { text: '取消' },
+      {
+        text: '确定',
         style: { color: '#FC6627' },
-        text: '确认',
-        onPress: () => {
+        onPress() {
+          // 删除token
           dispatch(logout())
-          history.replace('/login')
-        }
-      }
+          // 跳转到登录页
+          history.push('/login')
+          Toast.success('退出登录成功')
+        },
+      },
     ])
   }
 
+  // 获取redux中profile数据
+  const profile = useSelector((state) => state.profile.profile)
+  // console.log(profile)
   return (
     <div className={styles.root}>
       <div className="content">
-        <NavBar onLeftClick={() => history.go(-1)}>个人信息</NavBar>
+        {/* 顶部导航栏 */}
+        <NavBar>个人信息</NavBar>
+
         <div className="wrapper">
           <List className="profile-list">
             <Item
-              arrow="horizontal"
               extra={
                 <span className="avatar-wrapper">
-                  <img src={userInfo.photo} alt="" />
+                  <img src={profile.photo} alt="" />
                 </span>
               }
-              onClick={() =>
-                setOpenList({
+              arrow="horizontal"
+              onClick={() => {
+                setListOpen({
                   visible: true,
-                  type: 'avatar'
+                  type: 'photo',
                 })
-              }
+              }}
             >
               头像
             </Item>
             <Item
+              extra={profile.name}
               arrow="horizontal"
-              extra={userInfo.name}
-              onClick={() =>
-                setOpenInput({
+              onClick={() => {
+                setOpen({
                   visible: true,
-                  type: 'name'
+                  type: 'name',
                 })
-              }
+              }}
             >
               昵称
             </Item>
             <Item
-              arrow="horizontal"
               extra={
                 <span
-                  className={classnames(
-                    'intro',
-                    userInfo.intro ? 'normal' : ''
-                  )}
+                  className={classnames('intro', profile.intro ? 'normal' : '')}
                 >
-                  {userInfo.intro || '未填写'}
+                  {profile.intro || '未填写'}
                 </span>
               }
-              onClick={() =>
-                setOpenInput({
+              arrow="horizontal"
+              onClick={() => {
+                setOpen({
                   visible: true,
-                  type: 'intro'
+                  type: 'intro',
                 })
-              }
+              }}
             >
               简介
             </Item>
@@ -205,70 +172,73 @@ const ProfileEdit = () => {
 
           <List className="profile-list">
             <Item
+              extra={profile.gender === 0 ? '男' : '女'}
               arrow="horizontal"
-              extra={userInfo.gender === 0 ? '男' : '女'}
-              onClick={() =>
-                setOpenList({
+              onClick={() => {
+                setListOpen({
                   visible: true,
-                  type: 'gender'
+                  type: 'gender',
                 })
-              }
+              }}
             >
               性别
             </Item>
             <DatePicker
               mode="date"
-              value={new Date(userInfo.birthday)}
               title="选择年月日"
+              value={new Date(profile.birthday)}
               minDate={new Date(1900, 1, 1, 0, 0, 0)}
               maxDate={new Date()}
-              onChange={onBirthdayChange}
+              onChange={onBirthChange}
             >
-              <Item arrow="horizontal" extra={userInfo.birthday}>
-                生日
-              </Item>
+              <List.Item arrow="horizontal">生日</List.Item>
             </DatePicker>
           </List>
-
-          <input type="file" hidden ref={fileRef} onChange={onUpdateAvatar} />
         </div>
 
-        <div className="logout">
-          <button className="btn" onClick={onLogout}>
-            退出登录
-          </button>
+        {/* 本地选择照片 */}
+        <input type="file" hidden ref={fileRef} onChange={onFileChange} />
+
+        {/* 底部栏：退出登录按钮 */}
+        <div className="logout" onClick={logOut}>
+          <button className="btn">退出登录</button>
         </div>
       </div>
+
+      {/* 全屏表单抽屉 */}
       <Drawer
-        className="drawer"
         position="right"
-        style={{ minHeight: document.documentElement.clientHeight }}
+        className="drawer"
+        children={''}
+        open={open.visible}
         sidebar={
-          openInput.visible && (
+          open.visible && (
             <EditInput
-              config={openInputConfig}
-              onClose={onCloseOpenInput}
+              type={open.type}
+              onClose={onClose}
               onCommit={onCommit}
-            />
+            ></EditInput>
           )
         }
-        open={openInput.visible}
-        onOpenChange={onCloseOpenInput}
-      >
-        {''}
-      </Drawer>
-      {/* 头像、性别 */}
+      />
+
+      {/* 菜单列表抽屉 */}
       <Drawer
-        className="drawer-list"
         position="bottom"
-        sidebar={<EditList config={openListConfig} onClose={onCloseOpenList} />}
-        open={openList.visible}
-        onOpenChange={onCloseOpenList}
-      >
-        {''}
-      </Drawer>
+        className="drawer-list"
+        children={''}
+        sidebar={
+          listOpen.visible && (
+            <EditList
+              config={config}
+              onClose={onClose}
+              type={listOpen.type}
+            ></EditList>
+          )
+        }
+        open={listOpen.visible}
+        onOpenChange={onClose}
+      />
     </div>
   )
 }
-
-export default ProfileEdit

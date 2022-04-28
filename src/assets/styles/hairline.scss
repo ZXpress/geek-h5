@@ -1,6 +1,4 @@
-// 参考： https://github.com/ant-design/ant-design-mobile/blob/master/components/grid/style/index.less
-// 原理： 伪元素 + transform 缩放
-//       伪元素::after或::before是独立于当前元素，可以单独对其缩放而不影响元素本身的缩放
+// src/assets/styles/hairline.scss
 
 @mixin scale-hairline-common($color, $top, $right, $bottom, $left) {
   content: '';
@@ -14,6 +12,18 @@
   background-color: $color;
 }
 
+// 添加边框
+/* 
+    用法：
+  
+    // 导入
+    @import '@scss/hairline.scss';
+  
+    // 在类中使用
+    .a {
+      @include hairline(bottom, #f0f0f0);
+    }
+  */
 @mixin hairline($direction, $color: #000, $radius: 0) {
   @if $direction == top {
     border-top: 1px solid $color;
@@ -115,6 +125,7 @@
   }
 }
 
+// 移除边框
 @mixin hairline-remove($position: all) {
   @if $position == left {
     border-left: 0;

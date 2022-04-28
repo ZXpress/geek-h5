@@ -4,8 +4,10 @@ import styles from './index.module.scss'
 const Video = () => {
   return (
     <div className={styles.root}>
+      {/* 顶部导航栏 */}
       <NavBar>视频</NavBar>
 
+      {/* 视频列表 */}
       <div className="video-list">
         <div className="video-item">
           <h3 className="title">

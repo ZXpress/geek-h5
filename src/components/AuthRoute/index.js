@@ -1,30 +1,34 @@
-import { isAuth } from '@/utils'
+import { hasToken } from '@/utils/storage'
 import { Redirect, Route } from 'react-router-dom'
 
-// https://reactrouter.com/web/example/auth-workflow
-// https://stackoverflow.com/a/64307442/15443637
-
+/**
+ * 鉴权路由组件
+ * @param {*} component 本来 Route 组件上的 component 属性
+ * @param {Array} rest 其他属性
+ */
 const AuthRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props => {
-        if (!isAuth()) {
-          return (
-            <Redirect to={
-              {
-                pathname: '/login',
-                state: {
-                  from: props.location.pathname
-                }
-              }
-            } />
-          )
+      render={(props) => {
+        // 如果有 token，则展示传入的组件
+        if (hasToken()) {
+          return <Component />
         }
-        return <Component {...props} />
+        // 否则调用 Redirect 组件跳转到登录页
+        return (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: props.location.pathname,
+              },
+            }}
+          />
+        )
       }}
     />
   )
 }
 
-export { AuthRoute }
+export default AuthRoute

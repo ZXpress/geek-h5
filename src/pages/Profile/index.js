@@ -1,61 +1,60 @@
-import Icon from '@/components/Icon'
-import { getProfile } from '@/store/actions'
+import Icon from '@/components/icon'
+import { getUser } from '@/store/actions/profile'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const Profile = () => {
-  const dispatch = useDispatch()
-  const profile = useSelector(state => state.profile.user)
   const history = useHistory()
-
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.profile.user)
+  // console.log(user)
   useEffect(() => {
-    dispatch(getProfile())
+    dispatch(getUser())
   }, [dispatch])
-
-  const { art_count, fans_count, follow_count, like_count, name, photo } =
-    profile
 
   return (
     <div className={styles.root}>
       <div className="profile">
+        {/* 顶部个人信息区域 */}
         <div className="user-info">
           <div className="avatar">
-            <img src={photo} alt="" />
+            <img src={user.photo} alt="" />
           </div>
-          <div className="user-name">{name}</div>
+          <div className="user-name">{user.name}</div>
           <Link to="/profile/edit">
             个人信息 <Icon type="iconbtn_right" />
           </Link>
         </div>
 
+        {/* 今日阅读区域 */}
         <div className="read-info">
           <Icon type="iconbtn_readingtime" />
-          今日阅读
-          <span>10</span>
-          分钟
+          今日阅读 <span>10</span> 分钟
         </div>
 
+        {/* 统计信息区域 */}
         <div className="count-list">
           <div className="count-item">
-            <p>{art_count}</p>
+            <p>{user.art_count}</p>
             <p>动态</p>
           </div>
           <div className="count-item">
-            <p>{follow_count}</p>
+            <p>{user.follow_count}</p>
             <p>关注</p>
           </div>
           <div className="count-item">
-            <p>{fans_count}</p>
+            <p>{user.fans_count}</p>
             <p>粉丝</p>
           </div>
           <div className="count-item">
-            <p>{like_count}</p>
+            <p>{user.like_count}</p>
             <p>被赞</p>
           </div>
         </div>
 
+        {/* 主功能菜单区域 */}
         <div className="user-links">
           <div className="link-item">
             <Icon type="iconbtn_mymessages" />
@@ -75,6 +74,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* 更多服务菜单区域 */}
       <div className="more-service">
         <h3>更多服务</h3>
         <div className="service-list">

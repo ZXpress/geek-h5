@@ -1,52 +1,54 @@
-const initialState = {
-  userChannel: [],
-  recommendChannel: [],
-  article: {
-    results: [],
-    pre_timestamp: +new Date()
-  },
+import {
+  SAVE_ALL_CHANNELS,
+  SAVE_ARTICLE_LIST,
+  SAVE_CHANNELS,
+} from '../action_types/home'
+
+const initValue = {
+  userChannels: [],
+  allChannels: [],
+  // 存储文章列表
+  articles: {},
   moreAction: {
-    id: 0,
-    visible: false
-  }
+    visible: false,
+    articleId: '',
+  },
 }
 
-const home = (state = initialState, action) => {
-  switch (action.type) {
-    case 'home/channel':
+export default function reducer(state = initValue, action) {
+  const { type, payload } = action
+  switch (type) {
+    case SAVE_CHANNELS:
       return {
         ...state,
-        userChannel: action.payload
+        userChannels: payload,
       }
-
-    case 'home/recommend':
+    case SAVE_ALL_CHANNELS:
       return {
         ...state,
-        recommendChannel: action.payload
+        allChannels: payload,
       }
-
-    case 'home/article':
+    case SAVE_ARTICLE_LIST:
+      // loadMore为true应该追加数据
+      const oldList = state.articles[payload.channelId]?.list
       return {
         ...state,
-        article: action.payload
+        articles: {
+          ...state.articles,
+          [payload.channelId]: {
+            timestamp: payload.timestamp,
+            list: payload.loadMore
+              ? [...oldList, ...payload.list]
+              : payload.list,
+          },
+        },
       }
-
-    case 'home/more':
+    case 'home/setMoreAction':
       return {
         ...state,
-        article: {
-          ...action.payload,
-          results: [...state.article.results, ...action.payload.results]
-        }
-      }
-    case 'home/more_action':
-      return {
-        ...state,
-        moreAction: action.payload
+        moreAction: payload,
       }
     default:
       return state
   }
 }
-
-export { home }

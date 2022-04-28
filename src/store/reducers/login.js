@@ -1,15 +1,16 @@
-const initialState = {
+import { LOGOUT } from '../action_types/profile'
+
+const initValue = {
   token: '',
-  refresh_token: ''
+  refresh_token: '',
 }
-
-const login = (state = initialState, action) => {
-  switch (action.type) {
-    case 'login/token':
-      return { ...action.payload }
-    default:
-      return state
+export default function reducer(state = initValue, action) {
+  const { type, payload } = action
+  if (type === 'login/token') {
+    return payload
   }
+  if (type === LOGOUT) {
+    return {}
+  }
+  return state
 }
-
-export { login }

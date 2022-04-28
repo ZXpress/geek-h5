@@ -1,28 +1,23 @@
-const initialState = {
+import { SAVE_PROFILE, SAVE_USER } from '../action_types/profile'
+
+const initValue = {
   user: {},
-  userProfile: {}
+  profile: {},
 }
 
-const profile = (state = initialState, action) => {
-  switch (action.type) {
-    case 'profile/user':
-      return { ...state, user: { ...action.payload } }
-
-    case 'profile/profile':
-      return { ...state, userProfile: { ...action.payload } }
-
-    case 'profile/update':
-      const { name, value } = action.payload
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          [name]: value
-        }
-      }
-    default:
-      return state
+export default function (state = initValue, action) {
+  const { type, payload } = action
+  if (type === SAVE_USER) {
+    return {
+      ...state,
+      user: payload,
+    }
   }
+  if (type === SAVE_PROFILE) {
+    return {
+      ...state,
+      profile: payload,
+    }
+  }
+  return state
 }
-
-export { profile }

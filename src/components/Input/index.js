@@ -1,35 +1,33 @@
-import classnames from 'classnames'
 import styles from './index.module.scss'
+import classnames from 'classnames'
+import { useEffect, useRef } from 'react'
 
-const Input = ({
-  type = 'text',
-  value,
-  onChange,
-  name,
-  className,
-  placeholder,
+export default function Input({
   extra,
   onExtraClick,
+  className,
+  autoFocus,
   ...rest
-}) => {
+}) {
+  const inputRef = useRef(null)
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current.focus()
+    }
+  }, [autoFocus])
   return (
-    <div className={classnames(styles.root, className)}>
+    <div className={styles.root}>
       <input
-        value={value}
-        name={name}
-        className="input"
-        placeholder={placeholder}
-        type={type}
-        onChange={onChange}
+        ref={inputRef}
+        autoComplete="off"
+        className={classnames('input', className)}
         {...rest}
       />
       {extra && (
-        <span className="extra" onClick={onExtraClick}>
+        <div className="extra" onClick={onExtraClick}>
           {extra}
-        </span>
+        </div>
       )}
     </div>
   )
 }
-
-export default Input

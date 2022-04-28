@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import classnames from 'classnames'
+import classNames from 'classnames'
+import React, { useState, useRef, useEffect } from 'react'
 import styles from './index.module.scss'
 
-const Textarea = ({
-  className,
-  value,
-  onChange,
-  placeholder,
-  maxLength = 100
-}) => {
-  const [count, setCount] = useState(value.length || 0)
+export default function TextArea({ maxLength, className, ...rest }) {
+  const inputRef = useRef(null)
+  useEffect(() => {
+    inputRef.current.focus()
+    // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLInputElement/setSelectionRange
+    inputRef.current.setSelectionRange(-1, -1)
+  }, [])
+  const [value, setValue] = useState(rest.value || '')
+  const handleChange = (e) => {
+    setValue(e.target.value)
 
-  const onValueChange = e => {
-    onChange(e)
-    setCount(e.target.value.length)
+    rest.onChange?.(e)
   }
-
   return (
-    <div className={classnames(styles.root, className)}>
+    <div className={styles.root}>
+      {/* 文本输入框 */}
       <textarea
-        className="textarea"
-        value={value}
-        onChange={onValueChange}
+        ref={inputRef}
+        className={classNames('textarea', className)}
         maxLength={maxLength}
-        placeholder={placeholder}
+        {...rest}
+        value={value}
+        onChange={handleChange}
       />
+
+      {/* 当前字数/最大允许字数 */}
       <div className="count">
-        {count}/{maxLength}
+        {value.length}/{maxLength}
       </div>
     </div>
   )
 }
-
-export default Textarea

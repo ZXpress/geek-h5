@@ -1,10 +1,10 @@
 import styles from './index.module.scss'
-
-const EditList = ({ config, onClose }) => {
+const EditList = ({ config, onClose, type }) => {
+  const list = config[type]
   return (
     <div className={styles.root}>
-      {config.map((item, index) => (
-        <div key={index} className="list-item" onClick={item.onClick}>
+      {list.map((item) => (
+        <div key={item.title} onClick={item.onClick} className="list-item">
           {item.title}
         </div>
       ))}
@@ -15,5 +15,4 @@ const EditList = ({ config, onClose }) => {
     </div>
   )
 }
-
 export default EditList
